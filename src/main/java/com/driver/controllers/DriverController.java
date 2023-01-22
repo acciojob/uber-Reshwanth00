@@ -1,26 +1,47 @@
 package com.driver.controllers;
 
-import com.driver.services.DriverService;
+import com.driver.model.Customer;
+import com.driver.model.TripBooking;
+import com.driver.repository.CustomerRepository;
+import com.driver.services.CustomerService;
+import com.driver.services.impl.CustomerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
-@RequestMapping(value = "/driver")
-public class DriverController {
-	
-	@PostMapping(value = "/register")
-	public ResponseEntity<Void> registerDriver(@RequestParam String mobile, @RequestParam String password){
+@RequestMapping("/customer")
+public class CustomerController {
+	@Autowired
+	CustomerServiceImpl customerServiceImpl;
+	@Autowired
+	private CustomerRepository customerRepository;
+
+	@PostMapping("/register")
+	public ResponseEntity<Void> registerCustomer(@RequestBody Customer customer){
+		customerServiceImpl.register(customer);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
-	@DeleteMapping(value = "/delete")
-	public void deleteDriver(@RequestParam Integer driverId){
+
+	@DeleteMapping("/delete")
+	public void deleteCustomer(@RequestParam Integer customerId){
+		customerServiceImpl.deleteCustomer(customerId);
 	}
 
-	@PutMapping("/status")
-	public void updateStatus(@RequestParam Integer driverId){
+	@PostMapping("/bookTrip")
+	public ResponseEntity<Integer> bookTrip(@RequestParam Integer customerId, @RequestParam String fromLocation, @RequestParam String toLocation, @RequestParam Integer distanceInKm) throws Exception {
+		TripBooking bookedTrip=customerServiceImpl.bookTrip(customerId,fromLocation,toLocation,distanceInKm);
+		return new ResponseEntity<>(bookedTrip.getTripBookingId(), HttpStatus.CREATED);
+	}
+
+	@DeleteMapping("/complete")
+	public void completeTrip(@RequestParam Integer tripId){
+		customerServiceImpl.completeTrip(tripId);
+	}
+
+	@DeleteMapping("/cancelTrip")
+	public void cancelTrip(@RequestParam Integer tripId){
+		customerServiceImpl.cancelTrip(tripId);
 	}
 }
