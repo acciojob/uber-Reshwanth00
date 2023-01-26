@@ -1,112 +1,104 @@
 package com.driver.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
+@Table
 public class TripBooking {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int tripBookingId;
-
     private String fromLocation;
-
     private String toLocation;
-
     private int distanceInKm;
-
-    public TripStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(TripStatus status) {
-        this.status = status;
-    }
-
     @Enumerated(value = EnumType.STRING)
     private TripStatus status;
-
     private int bill;
+    public TripBooking(){}
 
     public int getTripBookingId() {
         return tripBookingId;
     }
 
-    public void setTripBookingId(int tripBookingId) {
-        this.tripBookingId = tripBookingId;
-    }
-
-    public String getFromLocation() {
-        return fromLocation;
-    }
-
-    public void setFromLocation(String fromLocation) {
-        this.fromLocation = fromLocation;
-    }
-
-    public String getToLocation() {
-        return toLocation;
-    }
-
-    public void setToLocation(String toLocation) {
-        this.toLocation = toLocation;
+    public int getBill() {
+        return bill;
     }
 
     public int getDistanceInKm() {
         return distanceInKm;
     }
 
+    public String getFromLocation() {
+        return fromLocation;
+    }
+
+    public TripStatus getStatus() {
+        return status;
+    }
+
+    public String getToLocation() {
+        return toLocation;
+    }
+
+    public void setStatus(TripStatus status) {
+        this.status = status;
+    }
+
+    public void setTripBookingId(int tripBookingId) {
+        this.tripBookingId = tripBookingId;
+    }
+
     public void setDistanceInKm(int distanceInKm) {
         this.distanceInKm = distanceInKm;
     }
 
+    public void setFromLocation(String fromLocation) {
+        this.fromLocation = fromLocation;
+    }
 
-
-
-    public int getBill() {
-        return bill;
+    public void setToLocation(String toLocation) {
+        this.toLocation = toLocation;
     }
 
     public void setBill(int bill) {
         this.bill = bill;
     }
-
-    public TripBooking() {
-    }
-
-    public TripBooking(int tripBookingId, String fromLocation, String toLocation, int distanceInKm, TripStatus status, int bill) {
-        this.tripBookingId = tripBookingId;
-        this.fromLocation = fromLocation;
-        this.toLocation = toLocation;
-        this.distanceInKm = distanceInKm;
-        this.status = status;
-        this.bill = bill;
+    public TripBooking(int tripBookingId, String fromLocation, String toLocation, int distanceInKm, TripStatus status, int bill){
+        setBill(bill);
+        setStatus(status);
+        setTripBookingId(tripBookingId);
+        setToLocation(toLocation);
+        setFromLocation(fromLocation);
+        setDistanceInKm(distanceInKm);
     }
     @ManyToOne
     @JoinColumn
     @JsonIgnore
     private Driver driver;
 
-    @ManyToOne
-    @JoinColumn
-    @JsonIgnore
-    private Customer customer;
-
-    public Driver getDriver() {
-        return driver;
-    }
-
-    public void setDriver(Driver driver) {
-        this.driver = driver;
-    }
-
     public Customer getCustomer() {
         return customer;
+    }
+
+    public Driver getDrive() {
+        return driver;
     }
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
+
+    public void setDriver(Driver driver) {
+        this.driver = driver;
+    }
+    @ManyToOne
+    @JoinColumn
+    @JsonIgnore
+    private Customer customer;
+
+
 }
