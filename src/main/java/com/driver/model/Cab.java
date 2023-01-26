@@ -34,7 +34,8 @@ public class Cab {
         this.id = id;
     }
     public Cab(){}
-    public Cab(int perKmRate,boolean available){
+    public Cab(int id,int perKmRate,boolean available){
+        setId(id);
         setAvailable(available);
         setPerKmRate(perKmRate);
     }
