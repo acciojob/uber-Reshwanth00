@@ -1,6 +1,5 @@
 package com.driver.services.impl;
 
-import java.sql.Driver;
 import java.util.List;
 
 import com.driver.services.AdminService;
@@ -8,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.driver.model.Admin;
 import com.driver.model.Customer;
+import com.driver.model.Driver;
 import com.driver.repository.AdminRepository;
 import com.driver.repository.CustomerRepository;
 import com.driver.repository.DriverRepository;
@@ -47,7 +47,7 @@ public class AdminServiceImpl implements AdminService {
 
 	@Override
 	public List<Driver> getListOfDrivers() {
-		List<Driver> driverList =  driverRepository1.findAll();
+		List<com.driver.model.Driver> driverList =  driverRepository1.findAll();
 		return driverList;
 	}
 
