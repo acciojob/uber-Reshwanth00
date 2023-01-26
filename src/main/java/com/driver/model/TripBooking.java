@@ -1,11 +1,6 @@
 package com.driver.model;
-
 import net.minidev.json.annotate.JsonIgnore;
-
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Table
 public class TripBooking {
@@ -99,6 +94,4 @@ public class TripBooking {
     @JoinColumn
     @JsonIgnore
     private Customer customer;
-
-
 }
