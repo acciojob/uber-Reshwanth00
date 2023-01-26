@@ -1,7 +1,6 @@
 package com.driver.services.impl;
 
 import com.driver.model.TripBooking;
-import com.driver.repository.CabRepository;
 import com.driver.services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,73 +26,89 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Autowired
 	TripBookingRepository tripBookingRepository2;
-	@Autowired
-	private CabRepository cabRepository;
 
 	@Override
 	public void register(Customer customer) {
-		//Save the customer in database
 		customerRepository2.save(customer);
 	}
 
 	@Override
 	public void deleteCustomer(Integer customerId) {
-		// Delete customer without using deleteById function
-		Customer customer=customerRepository2.findById(customerId).get();
-		customerRepository2.delete(customer);
-
+		customerRepository2.delete(customerRepository2.findById(customerId).get());
 	}
-
 	@Override
 	public TripBooking bookTrip(int customerId, String fromLocation, String toLocation, int distanceInKm) throws Exception{
-		//Book the driver with lowest driverId who is free (cab available variable is Boolean.TRUE). If no driver is available, throw "No cab available!" exception
-		//Avoid using SQL query
-		boolean booked=false;
-		TripBooking tripBooking=new TripBooking();
-		List<Driver> driverList=driverRepository2.findAll();
-		for(Driver driver:driverList){
-			if(driver.getCab().isAvailable()==true){
-				booked=true;
-				driver.getCab().setAvailable(false);
+		boolean available = false;
+		List<Driver> driverList = driverRepository2.findAll();
+		for(Driver driver: driverList){
+			if(driver.getCab().isAvailable()){
+				// creating the trip
+				TripBooking tripBooking = new TripBooking();
+				// setting costumer to the trip
+				tripBooking.setCustomer(customerRepository2.findById(customerId).get());
+				// setting driver to the list
+				tripBooking.setDriver(driverRepository2.findById(driver.getDriverId()).get());
+				// creating tripBook entity
 				tripBooking.setFromLocation(fromLocation);
 				tripBooking.setToLocation(toLocation);
-				tripBooking.setStatus(TripStatus.CONFIRMED);
 				tripBooking.setDistanceInKm(distanceInKm);
+				tripBooking.setStatus(TripStatus.CONFIRMED);
 				tripBooking.setBill(driver.getCab().getPerKmRate()*distanceInKm);
-				driver.getTripbookingList().add(tripBooking);
-				Customer customer=customerRepository2.findById(customerId).get();
-				customer.getTripBookingList().add(tripBooking);
-				tripBooking.setCustomer(customer);
-				tripBooking.setDriver(driver);
-				cabRepository.save(driver.getCab());
-				driverRepository2.save(driver);
+				// setting trip to the database and done with the setting the trip connection
 				tripBookingRepository2.save(tripBooking);
+				// now setting the customer to the trip
+				// getting the customer form the database
+				Customer customer = customerRepository2.findById(customerId).get();
+				// getting the list of trips from that customer entity
+				List<TripBooking> tripBookingList = customer.getTripBookingList();
+				// setting the current trip to thr list
+				tripBookingList.add(tripBooking);
+				// and changing the list and customer part is completed
+				customer.setTripBookingList(tripBookingList);
+				// now change in the database of the customer
+				// delete the previous
+				customerRepository2.deleteById(customerId);
+				// add the new one
 				customerRepository2.save(customer);
-				break;
+				// creating the driver entity
+				Driver driver1 = driverRepository2.findById(driver.getDriverId()).get();
+				// now get the list trips done by the driver
+				List<TripBooking> tripBookings = driver1.getTripBookingList();
+				// now add this current trip to the driver
+				tripBookings.add(tripBooking);
+				// update the driver trips list
+				driver1.setTripBookingList(tripBookings);
+				// now update the driver database
+				// delete the previous one
+				driverRepository2.deleteById(driver.getDriverId());
+				// now add the updated database
+				driverRepository2.save(driver1);
+				available = true;
+				return tripBooking;
 			}
 		}
-		if(booked==false) throw new Exception("No cab available!");
-		return tripBooking;
+		if(!available){
+			throw new Exception("No cab available!");
+		}
+		return null;
 	}
 
 	@Override
 	public void cancelTrip(Integer tripId){
 		//Cancel the trip having given trip Id and update TripBooking attributes accordingly
-		TripBooking tripBooking=tripBookingRepository2.findById(tripId).get();
-		tripBooking.getDriver().getCab().setAvailable(true);
+		TripBooking tripBooking = tripBookingRepository2.findById(tripId).get();
 		tripBooking.setStatus(TripStatus.CANCELED);
-		tripBooking.getCustomer().getTripBookingList().remove(tripBooking);
+		tripBooking.getDrive().getCab().setAvailable(true);
 		tripBooking.setBill(0);
 		tripBookingRepository2.save(tripBooking);
 	}
-
 	@Override
 	public void completeTrip(Integer tripId){
 		//Complete the trip having given trip Id and update TripBooking attributes accordingly
-		TripBooking tripBooking=tripBookingRepository2.findById(tripId).get();
-		tripBooking.getDriver().getCab().setAvailable(true);
+		TripBooking tripBooking = tripBookingRepository2.findById(tripId).get();
+		tripBooking.setBill(0);
+		tripBooking.getDrive().getCab().setAvailable(true);
 		tripBooking.setStatus(TripStatus.COMPLETED);
 		tripBookingRepository2.save(tripBooking);
-
 	}
 }
