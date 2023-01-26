@@ -1,22 +1,16 @@
 package com.driver.services.impl;
 
+import java.sql.Driver;
 import java.util.List;
 
 import com.driver.services.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.driver.model.Admin;
 import com.driver.model.Customer;
-import com.driver.model.Driver;
 import com.driver.repository.AdminRepository;
 import com.driver.repository.CustomerRepository;
 import com.driver.repository.DriverRepository;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
 @Service
 public class AdminServiceImpl implements AdminService {
 
@@ -38,7 +32,7 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public Admin updatePassword(Integer adminId, String password) {
 		//Update the password of admin with given id
-		Admin admin=adminRepository1.findById(adminId).get();
+		Admin admin = adminRepository1.findById(adminId).get();
 		admin.setPassword(password);
 		adminRepository1.save(admin);
 		return admin;
@@ -49,21 +43,20 @@ public class AdminServiceImpl implements AdminService {
 	public void deleteAdmin(int adminId){
 		// Delete admin without using deleteById function
 		adminRepository1.delete(adminRepository1.findById(adminId).get());
-
 	}
 
 	@Override
 	public List<Driver> getListOfDrivers() {
-		//Find the list of all drivers
-		return driverRepository1.findAll();
-
+		List<Driver> driverList =  driverRepository1.findAll();
+		return driverList;
 	}
 
 	@Override
 	public List<Customer> getListOfCustomers() {
 		//Find the list of all customers
-		return customerRepository1.findAll();
-
+		List<Customer> customerList = customerRepository1.findAll();
+		return customerList;
 	}
 
 }
+
