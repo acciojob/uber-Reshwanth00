@@ -10,9 +10,9 @@ public class Admin {
     private String userName;
     private String password;
     public Admin(int adminId,String userName,String password){
-        setPassword(password);
-        setAdminId(adminId);
-        setUserName(userName);
+        this.adminId=adminId;
+        this.userName=userName;
+        this.password=password;
     }
 
     public String getPassword() {
