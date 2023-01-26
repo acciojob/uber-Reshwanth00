@@ -13,16 +13,12 @@ import com.driver.repository.CustomerRepository;
 import com.driver.repository.DriverRepository;
 @Service
 public class AdminServiceImpl implements AdminService {
-
 	@Autowired
 	AdminRepository adminRepository1;
-
 	@Autowired
 	DriverRepository driverRepository1;
-
 	@Autowired
 	CustomerRepository customerRepository1;
-
 	@Override
 	public void adminRegister(Admin admin) {
 		adminRepository1.save(admin);
@@ -32,7 +28,6 @@ public class AdminServiceImpl implements AdminService {
 	public Admin updatePassword(Integer adminId, String password) {
 		Admin admin = adminRepository1.findById(adminId).get();
 		admin.setPassword(password);
-		deleteAdmin(adminId);
 		adminRepository1.save(admin);
 		return admin;
 	}
@@ -50,4 +45,3 @@ public class AdminServiceImpl implements AdminService {
 		return customerRepository1.findAll();
 	}
 }
-
