@@ -1,61 +1,104 @@
-package com.driver.services.impl;
+package com.driver.model;
 
-import java.sql.Driver;
+import net.minidev.json.annotate.JsonIgnore;
+
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
-import com.driver.services.AdminService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import com.driver.model.Admin;
-import com.driver.model.Customer;
-import com.driver.repository.AdminRepository;
-import com.driver.repository.CustomerRepository;
-import com.driver.repository.DriverRepository;
-@Service
-public class AdminServiceImpl implements AdminService {
+@Entity
+@Table
+public class TripBooking {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int tripBookingId;
+    private String fromLocation;
+    private String toLocation;
+    private int distanceInKm;
+    @Enumerated(value = EnumType.STRING)
+    private TripStatus status;
+    private int bill;
+    public TripBooking(){}
 
-	@Autowired
-	AdminRepository adminRepository1;
+    public int getTripBookingId() {
+        return tripBookingId;
+    }
 
-	@Autowired
-	DriverRepository driverRepository1;
+    public int getBill() {
+        return bill;
+    }
 
-	@Autowired
-	CustomerRepository customerRepository1;
+    public int getDistanceInKm() {
+        return distanceInKm;
+    }
 
-	@Override
-	public void adminRegister(Admin admin) {
-		//Save the admin in the database
-		adminRepository1.save(admin);
-	}
+    public String getFromLocation() {
+        return fromLocation;
+    }
 
-	@Override
-	public Admin updatePassword(Integer adminId, String password) {
-		//Update the password of admin with given id
-		Admin admin = adminRepository1.findById(adminId).get();
-		admin.setPassword(password);
-		adminRepository1.save(admin);
-		return admin;
+    public TripStatus getStatus() {
+        return status;
+    }
 
-	}
+    public String getToLocation() {
+        return toLocation;
+    }
 
-	@Override
-	public void deleteAdmin(int adminId){
-		// Delete admin without using deleteById function
-		adminRepository1.delete(adminRepository1.findById(adminId).get());
-	}
+    public void setStatus(TripStatus status) {
+        this.status = status;
+    }
 
-	@Override
-	public List<Driver> getListOfDrivers() {
-		List<Driver> driverList =  driverRepository1.findAll();
-		return driverList;
-	}
+    public void setTripBookingId(int tripBookingId) {
+        this.tripBookingId = tripBookingId;
+    }
 
-	@Override
-	public List<Customer> getListOfCustomers() {
-		//Find the list of all customers
-		List<Customer> customerList = customerRepository1.findAll();
-		return customerList;
-	}
+    public void setDistanceInKm(int distanceInKm) {
+        this.distanceInKm = distanceInKm;
+    }
+
+    public void setFromLocation(String fromLocation) {
+        this.fromLocation = fromLocation;
+    }
+
+    public void setToLocation(String toLocation) {
+        this.toLocation = toLocation;
+    }
+
+    public void setBill(int bill) {
+        this.bill = bill;
+    }
+    public TripBooking(int tripBookingId, String fromLocation, String toLocation, int distanceInKm, TripStatus status, int bill){
+        setBill(bill);
+        setStatus(status);
+        setTripBookingId(tripBookingId);
+        setToLocation(toLocation);
+        setFromLocation(fromLocation);
+        setDistanceInKm(distanceInKm);
+    }
+    @ManyToOne
+    @JoinColumn
+    @JsonIgnore
+    private Driver driver;
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public Driver getDrive() {
+        return driver;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public void setDriver(Driver driver) {
+        this.driver = driver;
+    }
+    @ManyToOne
+    @JoinColumn
+    @JsonIgnore
+    private Customer customer;
+
 
 }
