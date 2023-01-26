@@ -9,6 +9,11 @@ public class Admin {
     private int adminId;
     private String userName;
     private String password;
+    public Admin(int adminId,String userName,String password){
+        setPassword(password);
+        setAdminId(adminId);
+        setUserName(userName);
+    }
 
     public String getPassword() {
         return password;
@@ -34,9 +39,5 @@ public class Admin {
         this.adminId = adminId;
     }
     public Admin(){}
-    public Admin(int adminId,String userName,String password){
-        setPassword(password);
-        setAdminId(adminId);
-        setUserName(userName);
-    }
+
 }
